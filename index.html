@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register & Login</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #6c63ff;
+        --primary-dark: #564fcc;
+        --secondary: #ff6584;
+        --dark: #2a2a72;
+        --light: #f8f9fa;
+        --gray: #adb5bd;
+        --success: #28a745;
+        --danger: #dc3545;
+        --warning: #fd7e14;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        animation: gradientBG 15s ease infinite;
+        background-size: 400% 400%;
+      }
+
+      @keyframes gradientBG {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      .auth-container {
+        display: flex;
+        width: 900px;
+        max-width: 100%;
+        min-height: 550px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .form-container {
+        flex: 1;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        transition: all 0.6s ease-in-out;
+      }
+
+      .welcome-container {
+        flex: 1;
+        background: linear-gradient(
+          to right,
+          var(--primary),
+          var(--primary-dark)
+        );
+        color: white;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        transition: all 0.6s ease-in-out;
+      }
+
+      .welcome-container h2 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        font-weight: 700;
+      }
+
+      .welcome-container p {
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+        line-height: 1.6;
+      }
+
+      .welcome-container button {
+        background: transparent;
+        border: 2px solid white;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        outline: none;
+      }
+
+      .welcome-container button:hover {
+        background: white;
+        color: var(--primary);
+      }
+
+      .form-title {
+        font-size: 2rem;
+        color: var(--dark);
+        margin-bottom: 30px;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .input-group {
+        position: relative;
+        margin-bottom: 25px;
+      }
+
+      .input-group i {
+        position: absolute;
+        top: 18px;
+        left: 15px;
+        color: var(--gray);
+        transition: all 0.3s ease;
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 15px 15px 15px 45px;
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+      }
+
+      .input-group input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+        background-color: white;
+      }
+
+      .input-group input:focus + i {
+        color: var(--primary);
+      }
+
+      .input-group label {
+        position: absolute;
+        top: -10px;
+        left: 40px;
+        font-size: 0.8rem;
+        color: var(--primary);
+        background-color: white;
+        padding: 0 5px;
+        pointer-events: none;
+        transition: all 0.3s ease;
+        z-index: 1;
+      }
+
+      .input-group input::placeholder {
+        color: transparent;
+      }
+
+      .input-group input:focus::placeholder {
+        color: var(--gray);
+        opacity: 0.6;
+      }
+
+      .forgot-password {
+        text-align: right;
+        margin-bottom: 20px;
+      }
+
+      .forgot-password a {
+        color: var(--gray);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.3s ease;
+      }
+
+      .forgot-password a:hover {
+        color: var(--primary);
+      }
+
+      .btn {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 10px;
+        background: var(--primary);
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+      }
+
+      .btn:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3);
+      }
+
+      .btn-google {
+        background: white;
+        color: #757575;
+        border: 1px solid #e0e0e0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .btn-google:hover {
+        background: #f5f5f5;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        margin: 20px 0;
+        color: var(--gray);
+        font-size: 0.9rem;
+      }
+
+      .divider::before,
+      .divider::after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid #e9ecef;
+      }
+
+      .divider::before {
+        margin-right: 10px;
+      }
+
+      .divider::after {
+        margin-left: 10px;
+      }
+
+      .toggle-form {
+        text-align: center;
+        margin-top: 20px;
+        color: var(--gray);
+        font-size: 0.9rem;
+      }
+
+      .toggle-form a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+      }
+
+      .toggle-form a:hover {
+        text-decoration: underline;
+      }
+
+      .message {
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .message.success {
+        background-color: rgba(40, 167, 69, 0.1);
+        color: var(--success);
+        border-left: 4px solid var(--success);
+      }
+
+      .message.error {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: var(--danger);
+        border-left: 4px solid var(--danger);
+      }
+
+      .message.warning {
+        background-color: rgba(253, 126, 20, 0.1);
+        color: var(--warning);
+        border-left: 4px solid var(--warning);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .auth-container {
+          flex-direction: column;
+          width: 100%;
+        }
+
+        .welcome-container {
+          padding: 30px 20px;
+        }
+
+        .welcome-container h2 {
+          font-size: 2rem;
+        }
+
+        .form-container {
+          padding: 30px 20px;
+        }
+      }
+
+      /* Hide forms initially */
+      #signup-form {
+        display: none;
+      }
+
+      /* Animation for form switch */
+      .auth-container.active .welcome-container {
+        transform: translateX(-100%);
+      }
+
+      .auth-container.active .form-container {
+        transform: translateX(-100%);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="auth-container" id="auth-container">
+      <div class="welcome-container" id="welcome-container">
+        <h2 id="welcome-title">Welcome Back!</h2>
+        <p id="welcome-text">
+          To keep connected with us please login with your personal info
+        </p>
+        <button id="welcome-button">Sign In</button>
+      </div>
+
+      <div class="form-container">
+        <!-- Sign Up Form -->
+        <div id="signup-form">
+          <h2 class="form-title">Create Account</h2>
+
+          <div id="signUpMessage" class="message" style="display: none"></div>
+
+          <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" id="fName" placeholder="" required />
+            <label for="fName">First Name</label>
+          </div>
+
+          <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" id="lName" placeholder="" required />
+            <label for="lName">Last Name</label>
+          </div>
+
+          <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="rEmail" placeholder="" required />
+            <label for="rEmail">Email</label>
+          </div>
+
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="rPassword" placeholder="" required />
+            <label for="rPassword">Password</label>
+          </div>
+
+          <button class="btn" id="submitSignUp">Sign Up</button>
+
+          <div class="divider">or</div>
+
+          <button class="btn btn-google" id="googleSignUp">
+            <i class="fab fa-google"></i> Sign up with Google
+          </button>
+
+          <div class="toggle-form">
+            Already have an account? <a href="#" id="signInLink">Sign In</a>
+          </div>
+        </div>
+
+        <!-- Sign In Form -->
+        <div id="signin-form">
+          <h2 class="form-title">Sign In</h2>
+
+          <div id="signInMessage" class="message" style="display: none"></div>
+
+          <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" placeholder="" required />
+            <label for="email">Email</label>
+          </div>
+
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" placeholder="" required />
+            <label for="password">Password</label>
+          </div>
+
+          <div class="forgot-password">
+            <a href="#" id="reset">Forgot password?</a>
+          </div>
+
+          <button class="btn" id="submitSignIn">Sign In</button>
+
+          <div class="divider">or</div>
+
+          <button class="btn btn-google" id="googleSignIn">
+            <i class="fab fa-google"></i> Sign in with Google
+          </button>
+
+          <div class="toggle-form">
+            Don't have an account? <a href="#" id="signUpLink">Sign Up</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Import Firebase SDKs -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+      import {
+        getAuth,
+        sendPasswordResetEmail,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+        GoogleAuthProvider,
+        signInWithPopup,
+      } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+      import {
+        getFirestore,
+        setDoc,
+        doc,
+      } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBxDd0uUQREj7ql-bIjBzQ-whVVBxOMXiI",
+        authDomain: "login-form-5b101.firebaseapp.com",
+        projectId: "login-form-5b101",
+        storageBucket: "login-form-5b101.firebasestorage.app",
+        messagingSenderId: "780897821919",
+        appId: "1:780897821919:web:df63d860fa25305989b56a",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const auth = getAuth(app);
+      auth.languageCode = "en";
+      const provider = new GoogleAuthProvider();
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // DOM Elements
+        const authContainer = document.getElementById("auth-container");
+        const welcomeContainer = document.getElementById("welcome-container");
+        const welcomeTitle = document.getElementById("welcome-title");
+        const welcomeText = document.getElementById("welcome-text");
+        const welcomeButton = document.getElementById("welcome-button");
+        const signupForm = document.getElementById("signup-form");
+        const signinForm = document.getElementById("signin-form");
+        const signUpLink = document.getElementById("signUpLink");
+        const signInLink = document.getElementById("signInLink");
+        const signUpMessage = document.getElementById("signUpMessage");
+        const signInMessage = document.getElementById("signInMessage");
+        const googleSignIn = document.getElementById("googleSignIn");
+        const googleSignUp = document.getElementById("googleSignUp");
+        const resetPassword = document.getElementById("reset");
+
+        // Show sign in form by default
+        signinForm.style.display = "block";
+        signupForm.style.display = "none";
+
+        // Toggle between forms
+        signUpLink.addEventListener("click", function (e) {
+          e.preventDefault();
+          authContainer.classList.add("active");
+          signinForm.style.display = "none";
+          signupForm.style.display = "block";
+          welcomeTitle.textContent = "Welcome Friend!";
+          welcomeText.textContent =
+            "Enter your personal details and start your journey with us";
+          welcomeButton.textContent = "Sign Up";
+        });
+
+        signInLink.addEventListener("click", function (e) {
+          e.preventDefault();
+          authContainer.classList.remove("active");
+          signupForm.style.display = "none";
+          signinForm.style.display = "block";
+          welcomeTitle.textContent = "Welcome Back!";
+          welcomeText.textContent =
+            "To keep connected with us please login with your personal info";
+          welcomeButton.textContent = "Sign In";
+        });
+
+        welcomeButton.addEventListener("click", function () {
+          if (welcomeButton.textContent === "Sign In") {
+            authContainer.classList.remove("active");
+            signupForm.style.display = "none";
+            signinForm.style.display = "block";
+          } else {
+            authContainer.classList.add("active");
+            signinForm.style.display = "none";
+            signupForm.style.display = "block";
+          }
+        });
+
+        // Handle Google Sign In/Sign Up
+        function handleGoogleAuth() {
+          signInWithPopup(auth, provider)
+            .then((result) => {
+              const credential =
+                GoogleAuthProvider.credentialFromResult(result);
+              const user = result.user;
+
+              // Save user data to Firestore
+              const userData = {
+                email: user.email,
+                firstName: user.displayName?.split(" ")[0] || "",
+                lastName: user.displayName?.split(" ")[1] || "",
+              };
+
+              setDoc(doc(db, "users", user.uid), userData).then(() => {
+                showMessage(
+                  signInMessage,
+                  "Login successful! Redirecting...",
+                  "success"
+                );
+                localStorage.setItem("loggedInUserId", user.uid);
+                setTimeout(() => {
+                  window.location.href = "home.html";
+                }, 1500);
+              });
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              showMessage(signInMessage, errorMessage, "error");
+            });
+        }
+
+        googleSignIn.addEventListener("click", handleGoogleAuth);
+        googleSignUp.addEventListener("click", handleGoogleAuth);
+
+        // Handle Email Sign Up
+        document
+          .getElementById("submitSignUp")
+          .addEventListener("click", async function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById("rEmail").value;
+            const password = document.getElementById("rPassword").value;
+            const firstName = document.getElementById("fName").value;
+            const lastName = document.getElementById("lName").value;
+
+            try {
+              const userCredential = await createUserWithEmailAndPassword(
+                auth,
+                email,
+                password
+              );
+              const user = userCredential.user;
+
+              const userData = { email, firstName, lastName };
+              await setDoc(doc(db, "users", user.uid), userData);
+
+              showMessage(
+                signUpMessage,
+                "Account created successfully! Redirecting...",
+                "success"
+              );
+              localStorage.setItem("loggedInUserId", user.uid);
+
+              setTimeout(() => {
+                window.location.href = "home.html";
+              }, 1500);
+            } catch (error) {
+              const errorCode = error.code;
+              let errorMessage = "Unable to create user";
+
+              if (errorCode === "auth/email-already-in-use") {
+                errorMessage = "Email address already exists!";
+              } else if (errorCode === "auth/weak-password") {
+                errorMessage = "Password should be at least 6 characters";
+              } else if (errorCode === "auth/invalid-email") {
+                errorMessage = "Email address is not valid";
+              }
+
+              showMessage(signUpMessage, errorMessage, "error");
+            }
+          });
+
+        // Handle Email Sign In
+        document
+          .getElementById("submitSignIn")
+          .addEventListener("click", function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            signInWithEmailAndPassword(auth, email, password)
+              .then((userCredential) => {
+                const user = userCredential.user;
+                showMessage(
+                  signInMessage,
+                  "Login successful! Redirecting...",
+                  "success"
+                );
+                localStorage.setItem("loggedInUserId", user.uid);
+
+                setTimeout(() => {
+                  window.location.href = "home.html";
+                }, 1500);
+              })
+              .catch((error) => {
+                const errorCode = error.code;
+                let errorMessage = "Login failed";
+
+                if (errorCode === "auth/invalid-credential") {
+                  errorMessage = "Incorrect email or password";
+                } else if (errorCode === "auth/user-not-found") {
+                  errorMessage = "Account does not exist";
+                } else if (errorCode === "auth/wrong-password") {
+                  errorMessage = "Incorrect password";
+                } else if (errorCode === "auth/too-many-requests") {
+                  errorMessage = "Too many attempts. Try again later";
+                }
+
+                showMessage(signInMessage, errorMessage, "error");
+              });
+          });
+
+        // Handle Password Reset
+        resetPassword.addEventListener("click", function (e) {
+          e.preventDefault();
+
+          const email = document.getElementById("email").value;
+
+          if (!email) {
+            showMessage(
+              signInMessage,
+              "Please enter your email address first",
+              "warning"
+            );
+            return;
+          }
+
+          sendPasswordResetEmail(auth, email)
+            .then(() => {
+              showMessage(
+                signInMessage,
+                "Password reset email sent! Check your inbox.",
+                "success"
+              );
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              let errorMessage = "Error sending reset email";
+
+              if (errorCode === "auth/user-not-found") {
+                errorMessage = "No account found with this email";
+              } else if (errorCode === "auth/invalid-email") {
+                errorMessage = "Email address is not valid";
+              }
+
+              showMessage(signInMessage, errorMessage, "error");
+            });
+        });
+
+        // Helper function to show messages
+        function showMessage(element, text, type) {
+          element.textContent = text;
+          element.className = "message " + type;
+          element.style.display = "flex";
+
+          setTimeout(function () {
+            element.style.display = "none";
+          }, 5000);
+        }
+      });
+    </script>
+  </body>
+</html>

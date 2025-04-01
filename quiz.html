@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OOP</title>
+    <style>
+      /* Reset and Base Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #000000;
+        color: #333;
+        line-height: 1.6;
+        padding: 20px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* Quiz Container */
+      .quiz-container {
+        max-width: 800px;
+        width: 100%;
+        margin: 20px auto;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      /* Header Section */
+      .quiz-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .quiz-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .quiz-progress {
+        font-size: 14px;
+        color: #7f8c8d;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .progress-bar-container {
+        width: 100%;
+        height: 8px;
+        background-color: #ecf0f1;
+        border-radius: 4px;
+        margin-top: 10px;
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background-color: #3498db;
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+
+      /* Timer */
+      .timer {
+        background-color: #e74c3c;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .timer.warning {
+        background-color: #f39c12;
+        animation: pulse 1s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      /* Question Section */
+      .question {
+        font-size: 20px;
+        font-weight: 500;
+        margin-bottom: 30px;
+        color: #2c3e50;
+        min-height: 60px;
+      }
+
+      /* Options */
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+
+      .option {
+        padding: 15px;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        padding-left: 50px;
+      }
+
+      .option:hover {
+        background-color: #e9ecef;
+        border-color: #adb5bd;
+      }
+
+      .option.selected {
+        background-color: #3498db;
+        color: white;
+        border-color: #3498db;
+      }
+
+      .option.correct {
+        background-color: #2ecc71;
+        color: white;
+        border-color: #2ecc71;
+      }
+
+      .option.incorrect {
+        background-color: #e74c3c;
+        color: white;
+        border-color: #e74c3c;
+      }
+
+      .option input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+      }
+
+      .checkmark {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        height: 20px;
+        width: 20px;
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 50%;
+      }
+
+      .option.selected .checkmark {
+        background-color: white;
+        border-color: white;
+      }
+
+      .option.selected .checkmark:after {
+        content: "";
+        position: absolute;
+        display: block;
+        top: 4px;
+        left: 4px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #3498db;
+      }
+
+      .option.correct .checkmark:after {
+        background: #2ecc71;
+      }
+
+      .option.incorrect .checkmark:after {
+        background: #e74c3c;
+      }
+
+      /* Navigation Buttons */
+      .navigation-buttons {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .btn {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        flex: 1;
+      }
+
+      .btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .btn-prev {
+        background-color: #f0f0f0;
+        color: #333;
+      }
+
+      .btn-next {
+        background-color: #3498db;
+        color: white;
+      }
+
+      .btn-submit {
+        background-color: #2ecc71;
+        color: white;
+      }
+
+      .btn-restart {
+        background-color: #e74c3c;
+        color: white;
+      }
+
+      /* Feedback Section */
+      .feedback {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        border-left: 4px solid #3498db;
+        display: none;
+      }
+
+      .feedback.show {
+        display: block;
+        animation: fadeIn 0.5s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .feedback-title {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #2c3e50;
+      }
+
+      /* Result Container */
+      .result-container {
+        display: none;
+        text-align: center;
+        padding: 30px;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .result-container h2 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+      }
+
+      .score-display {
+        font-size: 24px;
+        font-weight: 600;
+        margin: 20px 0;
+        color: #3498db;
+      }
+
+      .score-breakdown {
+        width: 100%;
+        margin: 20px 0;
+        border-collapse: collapse;
+      }
+
+      .score-breakdown th,
+      .score-breakdown td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+      }
+
+      .score-breakdown th {
+        background-color: #f8f9fa;
+      }
+
+      .incorrect-answers {
+        margin-top: 30px;
+        text-align: left;
+      }
+
+      .incorrect-answer {
+        margin-bottom: 15px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+      }
+
+      /* Quiz Controls */
+      .quiz-controls {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 30px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .quiz-container {
+          padding: 20px;
+        }
+
+        .quiz-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .timer {
+          align-self: flex-end;
+        }
+
+        .navigation-buttons {
+          flex-direction: column;
+        }
+      }
+
+      /* Loading Animation */
+      .loading {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 10px;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+      }
+
+      .loading.show {
+        display: flex;
+      }
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Pause Overlay */
+      .pause-overlay {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        border-radius: 10px;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        color: white;
+        z-index: 20;
+      }
+
+      .pause-overlay.show {
+        display: flex;
+      }
+
+      /* Accessibility */
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+
+      /* Focus styles for keyboard navigation */
+      .option:focus,
+      .btn:focus {
+        outline: 2px solid #3498db;
+        outline-offset: 2px;
+      }
+      #logout {
+        background: linear-gradient(
+          135deg,
+          #ef4444,
+          #dc2626
+        ); /* Red gradient */
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        font-size: 1rem;
+        font-weight: bold;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      #logout:hover {
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+      }
+
+      #logout:active {
+        transform: translateY(0);
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <button id="logout">
+      <a href="home.html" style="text-decoration: none; color: white">Back</a>
+    </button>
+    <div class="quiz-container">
+      <!-- Loading overlay -->
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+      </div>
+
+      <!-- Pause overlay -->
+      <div class="pause-overlay" id="pause-overlay">
+        <h2>Quiz Paused</h2>
+        <p>Time remaining: <span id="paused-time">0:00</span></p>
+        <button class="btn btn-submit" id="resume-btn">Resume Quiz</button>
+      </div>
+
+      <!-- Quiz content (hidden when results show) -->
+      <div id="quiz-content">
+        <div class="quiz-header">
+          <div>
+            <h1 class="quiz-title">SKILLS</h1>
+            <div class="quiz-progress">
+              <span
+                >OOP • Question <span id="current-question-num">1</span> of
+                <span id="total-questions">0</span></span
+              >
+              <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
+              </div>
+            </div>
+          </div>
+          <div class="timer" id="timer">
+            <span aria-hidden="true">⏱️</span>
+            <span id="time-display">0:38</span>
+            <span class="sr-only">Time remaining: 38 seconds</span>
+          </div>
+        </div>
+
+        <div
+          class="question"
+          id="question"
+          tabindex="0"
+          aria-live="polite"
+        ></div>
+
+        <div
+          class="options"
+          id="options"
+          role="radiogroup"
+          aria-labelledby="question"
+        >
+          <!-- Options will be inserted dynamically here -->
+        </div>
+
+        <!-- Feedback section -->
+        <div class="feedback" id="feedback">
+          <div class="feedback-title">Explanation:</div>
+          <div id="explanation"></div>
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="navigation-buttons">
+          <button class="btn btn-prev" id="prev-btn" disabled>Previous</button>
+          <button class="btn btn-next" id="next-btn" disabled>Next</button>
+          <button class="btn btn-submit" id="submit-btn" style="display: none">
+            Submit Answer
+          </button>
+          <button
+            class="btn btn-restart"
+            id="restart-btn"
+            style="display: none"
+          >
+            Restart Quiz
+          </button>
+        </div>
+
+        <!-- Quiz controls -->
+        <div class="quiz-controls">
+          <button class="btn" id="pause-btn">Pause Quiz</button>
+        </div>
+      </div>
+
+      <!-- Result container (hidden during quiz) -->
+      <div class="result-container" id="result-container">
+        <h2>Quiz Completed!</h2>
+        <div class="score-display">
+          Your score: <span id="score">0</span>/<span id="total-score">0</span>
+        </div>
+        <p id="performance-message"></p>
+
+        <table class="score-breakdown">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Correct</th>
+              <th>Total</th>
+              <th>Percentage</th>
+            </tr>
+          </thead>
+          <tbody id="score-breakdown">
+            <!-- Will be filled dynamically -->
+          </tbody>
+        </table>
+
+        <div class="incorrect-answers" id="incorrect-answers-container">
+          <h3>Review Incorrect Answers:</h3>
+          <!-- Will be filled dynamically -->
+        </div>
+
+        <div class="quiz-controls">
+          <button class="btn btn-restart" id="restart-result-btn">
+            Restart Quiz
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // DOM Elements
+        const quizContent = document.getElementById("quiz-content");
+        const resultContainer = document.getElementById("result-container");
+        const questionElement = document.getElementById("question");
+        const optionsContainer = document.getElementById("options");
+        const prevBtn = document.getElementById("prev-btn");
+        const nextBtn = document.getElementById("next-btn");
+        const submitBtn = document.getElementById("submit-btn");
+        const restartBtn = document.getElementById("restart-btn");
+        const restartResultBtn = document.getElementById("restart-result-btn");
+        const timerElement = document.getElementById("timer");
+        const timeDisplay = document.getElementById("time-display");
+        const progressElement = document.querySelector(".quiz-progress");
+        const progressBar = document.getElementById("progress-bar");
+        const currentQuestionNum = document.getElementById(
+          "current-question-num"
+        );
+        const totalQuestions = document.getElementById("total-questions");
+        const feedbackElement = document.getElementById("feedback");
+        const explanationElement = document.getElementById("explanation");
+        const scoreElement = document.getElementById("score");
+        const totalScoreElement = document.getElementById("total-score");
+        const performanceMessage = document.getElementById(
+          "performance-message"
+        );
+        const scoreBreakdown = document.getElementById("score-breakdown");
+        const incorrectAnswersContainer = document.getElementById(
+          "incorrect-answers-container"
+        );
+        const loadingElement = document.getElementById("loading");
+        const pauseOverlay = document.getElementById("pause-overlay");
+        const pauseBtn = document.getElementById("pause-btn");
+        const resumeBtn = document.getElementById("resume-btn");
+        const pausedTimeElement = document.getElementById("paused-time");
+
+        // Quiz Data
+        const questions = [
+          // Easy Questions
+          {
+            question: "What does OOP stand for?",
+            options: [
+              "Object-Oriented Processing",
+              "Object-Oriented Programming",
+              "Operational Object Programming",
+              "Organized Object Processing",
+              "I don't know yet.",
+            ],
+            answer: 1,
+            explanation:
+              "OOP stands for Object-Oriented Programming, a programming paradigm based on objects containing data and methods.",
+            category: "Easy",
+          },
+          {
+            question:
+              "Which of the following is NOT a fundamental OOP principle?",
+            options: [
+              "Encapsulation",
+              "Inheritance",
+              "Compilation",
+              "Polymorphism",
+              "I don't know yet.",
+            ],
+            answer: 2,
+            explanation:
+              "Compilation is a process of converting source code to machine code, not an OOP principle. The core OOP principles are encapsulation, inheritance, and polymorphism.",
+            category: "Easy",
+          },
+          {
+            question: "What is an object in OOP?",
+            options: [
+              "A blueprint of a class",
+              "An instance of a class",
+              "A function",
+              "A memory address",
+              "I don't know yet.",
+            ],
+            answer: 1,
+            explanation:
+              "An object is an instance of a class that contains data and methods to manipulate that data.",
+            category: "Easy",
+          },
+          {
+            question: "Which keyword is used to create an object in Java?",
+            options: ["class", "this", "new", "object", "I don't know yet."],
+            answer: 2,
+            explanation:
+              "The 'new' keyword is used to instantiate (create) an object in Java.",
+            category: "Easy",
+          },
+          {
+            question: "What is the purpose of a constructor in a class?",
+            options: [
+              "To allocate memory",
+              "To initialize an object",
+              "To call a method",
+              "To delete an object",
+              "I don't know yet.",
+            ],
+            answer: 1,
+            explanation:
+              "A constructor initializes the state of an object when it's created.",
+            category: "Easy",
+          },
+
+          // Medium Questions
+          {
+            question: "What is method overloading?",
+            options: [
+              "Defining multiple methods with the same name but different parameters",
+              "Using the super keyword",
+              "Defining a method in a subclass with the same name as in the parent class",
+              "Preventing method inheritance",
+              "I don't know yet.",
+            ],
+            answer: 0,
+            explanation:
+              "Method overloading occurs when multiple methods have the same name but different parameters within the same class.",
+            category: "Medium",
+          },
+          {
+            question: "What is the return type of a constructor?",
+            options: [
+              "void",
+              "The same type as the class",
+              "No return type",
+              "Object",
+              "I don't know yet.",
+            ],
+            answer: 2,
+            explanation:
+              "Constructors don't have return types - they implicitly return an instance of the class.",
+            category: "Medium",
+          },
+          {
+            question: "What does the `super` keyword do in Java?",
+            options: [
+              "Calls a subclass method",
+              "Accesses a superclass method or constructor",
+              "Declares a static method",
+              "Prevents method overriding",
+              "I don't know yet.",
+            ],
+            answer: 1,
+            explanation:
+              "The 'super' keyword is used to access/call the parent class members (methods and constructors).",
+            category: "Medium",
+          },
+          {
+            question: "Which OOP principle promotes code reusability?",
+            options: [
+              "Encapsulation",
+              "Inheritance",
+              "Abstraction",
+              "Polymorphism",
+              "I don't know yet.",
+            ],
+            answer: 1,
+            explanation:
+              "Inheritance allows classes to inherit attributes and methods from other classes, promoting code reuse.",
+            category: "Medium",
+          },
+          {
+            question: "What is dynamic method dispatch?",
+            options: [
+              "The ability to override methods at runtime",
+              "The ability to overload methods at compile time",
+              "The process of allocating memory for an object",
+              "The mechanism for calling static methods",
+              "I don't know yet.",
+            ],
+            answer: 0,
+            explanation:
+              "Dynamic method dispatch is the mechanism by which a call to an overridden method is resolved at runtime.",
+            category: "Medium",
+          },
+          {
+            question:
+              "What happens when an abstract method is not overridden in a subclass?",
+            options: [
+              "Compilation error",
+              "The method runs with default behavior",
+              "The program crashes at runtime",
+              "Nothing happens",
+              "I don't know yet.",
+            ],
+            answer: 0,
+            explanation:
+              "If a subclass doesn't implement all abstract methods from its parent, it must be declared abstract itself or it won't compile.",
+            category: "Medium",
+          },
+          {
+            question: "Which keyword is used to implement an interface?",
+            options: [
+              "extends",
+              "implements",
+              "interface",
+              "abstract",
+              "I don't know yet.",
+            ],
+            answer: 1,
+            explanation:
+              "The 'implements' keyword is used to implement an interface in Java.",
+            category: "Medium",
+          },
+          {
+            question: "How does Java support multiple inheritance?",
+            options: [
+              "Using multiple classes",
+              "Using interfaces",
+              "Using abstract classes",
+              "It does not support multiple inheritance",
+              "I don't know yet.",
+            ],
+            answer: 1,
+            explanation:
+              "Java supports multiple inheritance of type through interfaces (a class can implement multiple interfaces).",
+            category: "Medium",
+          },
+          {
+            question: "What is the default access modifier in Java?",
+            options: [
+              "private",
+              "public",
+              "protected",
+              "package-private (default)",
+              "I don't know yet.",
+            ],
+            answer: 3,
+            explanation:
+              "When no access modifier is specified, it's package-private (visible only within its own package).",
+            category: "Medium",
+          },
+          {
+            question: "What is a static method?",
+            options: [
+              "A method that belongs to an instance",
+              "A method that belongs to the class",
+              "A method that cannot be inherited",
+              "A method that can only be used in abstract classes",
+              "I don't know yet.",
+            ],
+            answer: 1,
+            explanation:
+              "Static methods belong to the class rather than any object instance.",
+            category: "Medium",
+          },
+          {
+            question:
+              "Which data-hiding concept is achieved using access modifiers?",
+            options: [
+              "Abstraction",
+              "Encapsulation",
+              "Inheritance",
+              "Polymorphism",
+              "I don't know yet.",
+            ],
+            answer: 1,
+            explanation:
+              "Encapsulation is implemented using access modifiers to hide implementation details.",
+            category: "Medium",
+          },
+          {
+            question:
+              "Which keyword is used to prevent inheritance of a class?",
+            options: [
+              "static",
+              "abstract",
+              "final",
+              "sealed",
+              "I don't know yet.",
+            ],
+            answer: 2,
+            explanation:
+              "The 'final' keyword prevents a class from being inherited.",
+            category: "Medium",
+          },
+          {
+            question: "How is multiple polymorphism achieved in Java?",
+            options: [
+              "Method overloading",
+              "Method overriding",
+              "Using both method overloading and overriding",
+              "By using multiple classes",
+              "I don't know yet.",
+            ],
+            answer: 2,
+            explanation:
+              "Java achieves polymorphism through both method overloading (compile-time) and overriding (runtime).",
+            category: "Medium",
+          },
+          {
+            question: "What is an abstract class?",
+            options: [
+              "A class that cannot be instantiated",
+              "A class that must have only abstract methods",
+              "A class that has no constructors",
+              "A class that can be extended only once",
+              "I don't know yet.",
+            ],
+            answer: 0,
+            explanation:
+              "An abstract class is a restricted class that cannot be instantiated directly.",
+            category: "Medium",
+          },
+          {
+            question: "What is method overriding?",
+            options: [
+              "Using the same method name with different parameters",
+              "Redefining a method in a subclass with the same signature",
+              "Preventing a method from being called",
+              "Hiding a method from a superclass",
+              "I don't know yet.",
+            ],
+            answer: 1,
+            explanation:
+              "Method overriding occurs when a subclass provides a specific implementation of a method already defined in its parent class.",
+            category: "Medium",
+          },
+
+          // Hard Questions
+          {
+            question:
+              "What happens if you do not provide a constructor in a class?",
+            options: [
+              "The class will not compile",
+              "Java provides a default constructor",
+              "The class cannot create objects",
+              "The class will be abstract",
+              "I don't know yet.",
+            ],
+            answer: 1,
+            explanation:
+              "If no constructor is provided, Java automatically provides a default no-argument constructor.",
+            category: "Hard",
+          },
+          {
+            question:
+              "What is the difference between an interface and an abstract class?",
+            options: [
+              "Interfaces can have implemented methods",
+              "Abstract classes support multiple inheritance",
+              "Interfaces define behavior without implementation",
+              "Abstract classes cannot have constructors",
+              "I don't know yet.",
+            ],
+            answer: 2,
+            explanation:
+              "Interfaces define what a class must do (contract) without providing implementation (prior to Java 8).",
+            category: "Hard",
+          },
+          {
+            question: "What is an inner class?",
+            options: [
+              "A subclass within another class",
+              "A method inside a class",
+              "A class inside another class",
+              "A private class",
+              "I don't know yet.",
+            ],
+            answer: 2,
+            explanation:
+              "An inner class is a class defined within another class.",
+            category: "Hard",
+          },
+          {
+            question: "Which of these is a characteristic of an interface?",
+            options: [
+              "Can have constructors",
+              "Cannot be instantiated",
+              "Can extend multiple classes",
+              "Can have instance variables",
+              "I don't know yet.",
+            ],
+            answer: 1,
+            explanation:
+              "Interfaces cannot be instantiated directly - they must be implemented by classes.",
+            category: "Hard",
+          },
+          {
+            question: "Which is true about Java's garbage collection?",
+            options: [
+              "It must be manually triggered",
+              "It automatically reclaims unused objects",
+              "It is based on reference counting only",
+              "It deletes objects immediately after use",
+              "I don't know yet.",
+            ],
+            answer: 1,
+            explanation:
+              "Java's garbage collector automatically manages memory by reclaiming objects that are no longer reachable.",
+            category: "Hard",
+          },
+        ];
+
+        // Quiz state
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let score = 0;
+        let timeLeft = 800; // 2 minutes
+        let timer;
+        let isPaused = false;
+        let categories = {};
+        let incorrectAnswers = [];
+
+        // Initialize quiz
+        function initQuiz() {
+          // Initialize categories
+          questions.forEach((q) => {
+            if (!categories[q.category]) {
+              categories[q.category] = { correct: 0, total: 0 };
+            }
+            categories[q.category].total++;
+          });
+
+          // Set total questions
+          totalQuestions.textContent = questions.length;
+
+          // Start timer
+          startTimer();
+
+          // Load first question
+          loadQuestion();
+
+          // Update progress bar
+          updateProgressBar();
+        }
+
+        // Start timer
+        function startTimer() {
+          clearInterval(timer);
+          timer = setInterval(function () {
+            if (!isPaused) {
+              timeLeft--;
+              updateTimer();
+
+              if (timeLeft <= 10) {
+                timerElement.classList.add("warning");
+              }
+
+              if (timeLeft <= 0) {
+                clearInterval(timer);
+                timeOut();
+              }
+            }
+          }, 1000);
+        }
+
+        // Update timer display
+        function updateTimer() {
+          const minutes = Math.floor(timeLeft / 60);
+          const seconds = timeLeft % 60;
+          const timeString = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+          timeDisplay.textContent = timeString;
+
+          // Update for screen readers
+          const srTime = `${minutes} minute${
+            minutes !== 1 ? "s" : ""
+          } and ${seconds} second${seconds !== 1 ? "s" : ""}`;
+          document.querySelector(
+            ".timer .sr-only"
+          ).textContent = `Time remaining: ${srTime}`;
+        }
+
+        // Handle time out
+        function timeOut() {
+          showLoading(() => {
+            // Auto-submit unanswered questions
+            questions.forEach((q, index) => {
+              if (userAnswers[index] === null) {
+                userAnswers[index] = -1; // Mark as unanswered
+              }
+            });
+
+            calculateResults();
+            showResults();
+          });
+        }
+
+        // Load question
+        function loadQuestion() {
+          showLoading(() => {
+            const question = questions[currentQuestionIndex];
+            questionElement.textContent = question.question;
+            currentQuestionNum.textContent = currentQuestionIndex + 1;
+
+            // Clear previous selection
+            optionsContainer.innerHTML = "";
+
+            // Create options
+            question.options.forEach((option, index) => {
+              const optionElement = document.createElement("div");
+              optionElement.className = "option";
+              if (userAnswers[currentQuestionIndex] === index) {
+                optionElement.classList.add("selected");
+              }
+
+              optionElement.innerHTML = `
+                            <input type="radio" name="answer" id="option-${index}" value="${index}" 
+                                   ${
+                                     userAnswers[currentQuestionIndex] === index
+                                       ? "checked"
+                                       : ""
+                                   }>
+                            <span class="checkmark"></span>
+                            <label for="option-${index}">${option}</label>
+                        `;
+
+              optionElement.addEventListener("click", () =>
+                selectOption(index)
+              );
+              optionsContainer.appendChild(optionElement);
+            });
+
+            // Update navigation buttons
+            updateNavigationButtons();
+
+            // Hide feedback
+            feedbackElement.classList.remove("show");
+
+            // Focus on question for accessibility
+            questionElement.focus();
+          });
+        }
+
+        // Select an option
+        function selectOption(selectedIndex) {
+          userAnswers[currentQuestionIndex] = selectedIndex;
+
+          // Update UI
+          const options = optionsContainer.querySelectorAll(".option");
+          options.forEach((option, index) => {
+            option.classList.remove("selected");
+            if (index === selectedIndex) {
+              option.classList.add("selected");
+            }
+          });
+
+          updateNavigationButtons();
+        }
+
+        // Update navigation buttons
+        function updateNavigationButtons() {
+          prevBtn.disabled = currentQuestionIndex === 0;
+          nextBtn.disabled = userAnswers[currentQuestionIndex] === null;
+
+          const isLastQuestion = currentQuestionIndex === questions.length - 1;
+          nextBtn.style.display = isLastQuestion ? "none" : "block";
+          submitBtn.style.display = isLastQuestion ? "block" : "none";
+          restartBtn.style.display = isLastQuestion ? "block" : "none";
+
+          if (isLastQuestion) {
+            submitBtn.disabled = userAnswers[currentQuestionIndex] === null;
+          }
+        }
+
+        // Update progress bar
+        function updateProgressBar() {
+          const progress =
+            ((currentQuestionIndex + 1) / questions.length) * 100;
+          progressBar.style.width = `${progress}%`;
+        }
+
+        // Show loading animation
+        function showLoading(callback) {
+          loadingElement.classList.add("show");
+          setTimeout(() => {
+            callback();
+            loadingElement.classList.remove("show");
+          }, 500); // Simulate loading delay
+        }
+
+        // Go to next question
+        function nextQuestion() {
+          if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            loadQuestion();
+            updateProgressBar();
+          }
+        }
+
+        // Go to previous question
+        function prevQuestion() {
+          if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            loadQuestion();
+            updateProgressBar();
+          }
+        }
+
+        // Submit answer and show feedback
+        function submitAnswer() {
+          const selectedAnswer = userAnswers[currentQuestionIndex];
+          const correctAnswer = questions[currentQuestionIndex].answer;
+
+          // Mark options
+          const options = optionsContainer.querySelectorAll(".option");
+          options.forEach((option, index) => {
+            if (index === correctAnswer) {
+              option.classList.add("correct");
+            } else if (
+              index === selectedAnswer &&
+              selectedAnswer !== correctAnswer
+            ) {
+              option.classList.add("incorrect");
+            }
+          });
+
+          // Disable further selection
+          options.forEach((option) => {
+            option.style.pointerEvents = "none";
+          });
+
+          // Show feedback
+          explanationElement.textContent =
+            questions[currentQuestionIndex].explanation;
+          feedbackElement.classList.add("show");
+
+          // Update navigation buttons
+          nextBtn.disabled = true;
+          prevBtn.disabled = true;
+          submitBtn.disabled = true;
+
+          // Auto-advance after delay if not last question
+          if (currentQuestionIndex < questions.length - 1) {
+            setTimeout(() => {
+              nextQuestion();
+            }, 3000);
+          }
+        }
+
+        // Submit entire quiz
+        function submitQuiz() {
+          showLoading(() => {
+            submitAnswer(); // Show feedback for last question
+            setTimeout(() => {
+              calculateResults();
+              showResults();
+            }, 3000);
+          });
+        }
+
+        // Calculate results
+        function calculateResults() {
+          score = 0;
+          incorrectAnswers = [];
+
+          questions.forEach((question, index) => {
+            if (userAnswers[index] === question.answer) {
+              score++;
+              categories[question.category].correct++;
+            } else if (
+              userAnswers[index] !== null &&
+              userAnswers[index] !== -1
+            ) {
+              // Store incorrect answers for review
+              incorrectAnswers.push({
+                question: question.question,
+                userAnswer: question.options[userAnswers[index]],
+                correctAnswer: question.options[question.answer],
+                explanation: question.explanation,
+              });
+            }
+          });
+        }
+
+        // Show results
+        function showResults() {
+          quizContent.style.display = "none";
+          resultContainer.style.display = "block";
+
+          // Set score
+          scoreElement.textContent = score;
+          totalScoreElement.textContent = questions.length;
+
+          // Set performance message
+          const percentage = (score / questions.length) * 100;
+          let message;
+          if (percentage >= 80) {
+            message =
+              "Excellent work! You have a strong understanding of ES6 concepts.";
+          } else if (percentage >= 60) {
+            message =
+              "Good job! You have a decent understanding but could review some concepts.";
+          } else {
+            message =
+              "Keep practicing! Review the incorrect answers to improve your understanding.";
+          }
+          performanceMessage.textContent = message;
+
+          // Set score breakdown
+          scoreBreakdown.innerHTML = "";
+          for (const [category, data] of Object.entries(categories)) {
+            const row = document.createElement("tr");
+            const percentage = Math.round((data.correct / data.total) * 100);
+
+            row.innerHTML = `
+                        <td>${category}</td>
+                        <td>${data.correct}</td>
+                        <td>${data.total}</td>
+                        <td>${percentage}%</td>
+                    `;
+            scoreBreakdown.appendChild(row);
+          }
+
+          // Set incorrect answers
+          incorrectAnswersContainer.innerHTML =
+            "<h3>Review Incorrect Answers:</h3>";
+          if (incorrectAnswers.length === 0) {
+            incorrectAnswersContainer.innerHTML +=
+              "<p>No incorrect answers to review! Great job!</p>";
+          } else {
+            incorrectAnswers.forEach((answer) => {
+              const answerElement = document.createElement("div");
+              answerElement.className = "incorrect-answer";
+              answerElement.innerHTML = `
+                            <p><strong>Question:</strong> ${answer.question}</p>
+                            <p><strong>Your answer:</strong> ${answer.userAnswer}</p>
+                            <p><strong>Correct answer:</strong> ${answer.correctAnswer}</p>
+                            <p><strong>Explanation:</strong> ${answer.explanation}</p>
+                        `;
+              incorrectAnswersContainer.appendChild(answerElement);
+            });
+          }
+        }
+
+        // Restart quiz
+        function restartQuiz() {
+          showLoading(() => {
+            // Reset state
+            currentQuestionIndex = 0;
+            userAnswers = new Array(questions.length).fill(null);
+            score = 0;
+            timeLeft = 120;
+            isPaused = false;
+
+            // Reset categories
+            for (const category in categories) {
+              categories[category].correct = 0;
+            }
+
+            // Reset UI
+            quizContent.style.display = "block";
+            resultContainer.style.display = "none";
+            timerElement.classList.remove("warning");
+
+            // Restart timer
+            startTimer();
+
+            // Load first question
+            loadQuestion();
+            updateProgressBar();
+          });
+        }
+
+        // Pause quiz
+        function pauseQuiz() {
+          isPaused = true;
+          pauseOverlay.classList.add("show");
+          pausedTimeElement.textContent = timeDisplay.textContent;
+          clearInterval(timer);
+        }
+
+        // Resume quiz
+        function resumeQuiz() {
+          isPaused = false;
+          pauseOverlay.classList.remove("show");
+          startTimer();
+        }
+
+        // Event listeners
+        nextBtn.addEventListener("click", nextQuestion);
+        prevBtn.addEventListener("click", prevQuestion);
+        submitBtn.addEventListener("click", submitQuiz);
+        restartBtn.addEventListener("click", restartQuiz);
+        restartResultBtn.addEventListener("click", restartQuiz);
+        pauseBtn.addEventListener("click", pauseQuiz);
+        resumeBtn.addEventListener("click", resumeQuiz);
+
+        // Keyboard navigation
+        document.addEventListener("keydown", function (e) {
+          if (resultContainer.style.display === "block") return;
+
+          if (e.key === "ArrowRight" && !nextBtn.disabled) {
+            nextQuestion();
+          } else if (e.key === "ArrowLeft" && !prevBtn.disabled) {
+            prevQuestion();
+          } else if (
+            e.key === "Enter" &&
+            currentQuestionIndex === questions.length - 1 &&
+            !submitBtn.disabled
+          ) {
+            submitQuiz();
+          } else if (
+            e.key >= 1 &&
+            e.key <= 5 &&
+            currentQuestionIndex < questions.length
+          ) {
+            // Select option 1-5 with keyboard
+            const optionIndex = parseInt(e.key) - 1;
+            if (optionIndex < questions[currentQuestionIndex].options.length) {
+              selectOption(optionIndex);
+            }
+          }
+        });
+
+        // Initialize the quiz
+        initQuiz();
+      });
+    </script>
+  </body>
+</html>
