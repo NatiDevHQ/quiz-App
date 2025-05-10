@@ -1,43 +1,60 @@
 Quiz App
 
 Live at: https://eng-natole.github.io/quiz-App/
+Status: Work in progress
+Audience: Students of Dire Dawa University
 
-> Status: Still in development
-Target Users: Students of Dire Dawa University
 
-
+---
 
 Overview
 
-This is a simple and interactive web-based Quiz Application designed to help students of Dire Dawa University test their knowledge in various subjects. The goal is to provide an easy-to-use, accessible platform for self-assessment, revision, and fun learning.
+This is an interactive and intelligent quiz application designed primarily for students of Dire Dawa University. It helps learners self-assess their knowledge across different topics through engaging quizzes. The app is being improved continuously to make learning smarter, faster, and more enjoyable.
+
+
+---
 
 Features
 
-Multiple choice questions
+Multiple-choice questions
 
-Real-time feedback on answers
+Real-time answer feedback
 
 Score tracking
 
-Responsive design for all devices
+AI-based question generation (coming soon)
+Automatically generate questions from selected topics using GPT-based AI for dynamic and personalized quizzes.
 
-User-friendly interface
+PDF insert for questions (coming soon)
+Easily upload a PDF file, and the app will extract relevant content to generate quiz questions.
 
+Responsive design – works on mobile and desktop
+
+Simple and clean user interface
+
+
+
+---
 
 Upcoming Features
 
-Login/Signup functionality
+User authentication (login/signup)
 
 Subject-wise quiz categories
 
 Timer-based quizzes
 
-Leaderboard to track top scores
+Leaderboard to track performance
 
-Admin panel to manage questions
+Admin panel to manage and review questions
 
-Progress tracking and reports
+User progress tracking and analytics
 
+Dark mode
+
+
+
+---
 
 Technologies Used
 
@@ -47,34 +64,49 @@ CSS3
 
 JavaScript
 
-GitHub Pages for hosting
+GitHub Pages (hosting)
 
+OpenAI API / LLM-based tools (planned)
+
+PDF.js or similar for PDF parsing (planned)
+
+
+
+---
 
 How to Use
 
-1. Visit the live site:https://eng-natole.github.io/quiz-App/
+1. Visit the live app:https://eng-natole.github.io/quiz-App/
 
 
-2. Click on "Start Quiz"
+2. Click "Start Quiz" to begin
 
 
-3. Answer the questions and receive immediate feedback
+3. Answer each question
 
 
-4. At the end, check your final score
+4. View your score and performance
 
 
+
+
+---
 
 Contribution
 
-Feel free to fork this repo and contribute to improving it! You can:
+You're welcome to contribute! You can help by:
 
-Add more quiz questions
+Improving the UI/UX
 
-Enhance UI/UX
+Adding new question sets
 
-Suggest or implement new features
+Implementing backend features
 
+Enhancing AI/PDF capabilities
+
+
+
+---
 
 License
 
