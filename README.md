@@ -52,7 +52,7 @@ GitHub Pages for hosting
 
 How to Use
 
-1. Visit the live site
+1. Visit the live site:https://eng-natole.github.io/quiz-App/
 
 
 2. Click on "Start Quiz"
