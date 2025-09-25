@@ -1,4 +1,4 @@
-In development...
+In development status 
 
 
 Quiz App
